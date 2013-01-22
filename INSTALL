@@ -1,0 +1,14 @@
+=======
+Install
+=======
+
+From the command line run ::
+
+     python setup.py install
+
+or ::
+
+    easy_install pyremotezip
+
+You will need administration priveliges to run this commands.
+
