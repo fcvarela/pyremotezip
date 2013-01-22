@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 # -*- Mode: Python; py-ident-offset: 4 -*-
 # vim:ts=4:sw=4:et
-'''
-PyRemoteZip
 
-@fcvarela: Write the freaking doc
-
-'''
 import urllib2
 from urllib2 import HTTPError
 import zlib
