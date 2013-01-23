@@ -112,7 +112,7 @@ class RemoteZip(object):
         """
         files = [x for x in self.tableOfContents if x['filename'] == filename]
         if len(files) == 0:
-            raise "Could not find specified file"
+            raise FileNotFoundException()
 
         fileRecord = files[0]
 
