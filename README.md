@@ -6,7 +6,7 @@ PyRemoteZip is a pure python module to extract files from remote zip archives wi
 
 ### Usage
 
-        from pyremotezip import remotezip.RemoteZip
+        from pyremotezip.remotezip import RemoteZip
         rz = RemoteZip(<some_url_here>)
         toc = rz.getTableOfContents()
         
