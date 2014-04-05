@@ -28,7 +28,7 @@ class RemoteZip(object):
             response = urllib2.urlopen(headRequest)
             self.filesize = int(response.info().getheader('Content-Length'))
             return True
-        except HTTPError, e:
+        except HTTPError as e:
             print '%s' % e
             return False
 
