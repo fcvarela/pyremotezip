@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# -*- Mode: Python; py-ident-offset: 4 -*-
-# vim:ts=4:sw=4:et
 
 import urllib2
-from urllib2 import HTTPError
 import zlib
+
+from urllib2 import HTTPError
 from struct import unpack
+
 
 class RemoteZip(object):
     """
@@ -23,12 +23,12 @@ class RemoteZip(object):
     def __file_exists(self):
         # check if file exists
         headRequest = urllib2.Request(self.zipURI)
-        headRequest.get_method = lambda : 'HEAD'
+        headRequest.get_method = lambda: 'HEAD'
         try:
             response = urllib2.urlopen(headRequest)
             self.filesize = int(response.info().getheader('Content-Length'))
             return True
-        except HTTPError, e:
+        except HTTPError as e:
             print '%s' % e
             return False
 
@@ -44,8 +44,8 @@ class RemoteZip(object):
 
         # now request bytes from that size minus a 64kb max zip directory length
         request = urllib2.Request(self.zipURI)
-        start = self.filesize-(65536)
-        end = self.filesize-1
+        start = self.filesize - (65536)
+        end = self.filesize - 1
         request.headers['Range'] = "bytes=%s-%s" % (start, end)
         handle = urllib2.urlopen(request)
 
@@ -64,13 +64,13 @@ class RemoteZip(object):
             raise Exception("Could not find end of directory")
 
         # now find the size of the directory: offset 12, 4 bytes
-        directory_size = unpack("i", raw_bytes[directory_end+12:directory_end+16])[0]
+        # directory_size = unpack("i", raw_bytes[directory_end+12:directory_end+16])[0]
 
         # and find the offset from start of file where it can be found
-        directory_start = unpack("i", raw_bytes[directory_end+16:directory_end+20])[0]
+        directory_start = unpack("i", raw_bytes[directory_end + 16: directory_end + 20])[0]
 
         # find the data in the raw_bytes
-        current_start = directory_start-start
+        current_start = directory_start - start
         filestart = 0
         compressedsize = 0
         tableOfContents = []
@@ -78,16 +78,16 @@ class RemoteZip(object):
         try:
             while True:
                 # get file name size (n), extra len (m) and comm len (k)
-                zip_n = unpack("H", raw_bytes[current_start+28:current_start+28+2])[0]
-                zip_m = unpack("H", raw_bytes[current_start+30:current_start+30+2])[0]
-                zip_k = unpack("H", raw_bytes[current_start+32:current_start+32+2])[0]
+                zip_n = unpack("H", raw_bytes[current_start + 28: current_start + 28 + 2])[0]
+                zip_m = unpack("H", raw_bytes[current_start + 30: current_start + 30 + 2])[0]
+                zip_k = unpack("H", raw_bytes[current_start + 32: current_start + 32 + 2])[0]
 
-                filename = raw_bytes[current_start+46:current_start+46+zip_n]
+                filename = raw_bytes[current_start + 46: current_start + 46 + zip_n]
 
                 # check if this is the index file
-                filestart = unpack("I", raw_bytes[current_start+42:current_start+42+4])[0]
-                compressedsize = unpack("I", raw_bytes[current_start+20:current_start+20+4])[0]
-                uncompressedsize = unpack("I", raw_bytes[current_start+24:current_start+24+4])[0]
+                filestart = unpack("I", raw_bytes[current_start + 42: current_start + 42 + 4])[0]
+                compressedsize = unpack("I", raw_bytes[current_start + 20: current_start + 20 + 4])[0]
+                uncompressedsize = unpack("I", raw_bytes[current_start + 24: current_start + 24 + 4])[0]
                 tableItem = {
                     'filename': filename,
                     'compressedsize': compressedsize,
@@ -97,7 +97,7 @@ class RemoteZip(object):
                 tableOfContents.append(tableItem)
 
                 # not this file, move along
-                current_start = current_start + 46+zip_n+zip_m+zip_k
+                current_start = current_start + 46 + zip_n + zip_m + zip_k
         except:
             pass
 
@@ -117,9 +117,9 @@ class RemoteZip(object):
         fileRecord = files[0]
 
         # got here? need to fetch the file size
-        metaheadroom = 1024 # should be enough
+        metaheadroom = 1024  # should be enough
         request = urllib2.Request(self.zipURI)
-        end = fileRecord['filestart']+fileRecord['compressedsize']+metaheadroom
+        end = fileRecord['filestart'] + fileRecord['compressedsize'] + metaheadroom
         request.headers['Range'] = "bytes=%s-%s" % (fileRecord['filestart'], end)
         handle = urllib2.urlopen(request)
         filedata = handle.read()
@@ -133,7 +133,7 @@ class RemoteZip(object):
         if comp_size != fileRecord['compressedsize']:
             raise Exception("Something went wrong. Directory and file header disagree of compressed file size")
 
-        raw_zip_data = filedata[30+zip_n+zip_m:30+zip_n+zip_m+comp_size]
+        raw_zip_data = filedata[30 + zip_n + zip_m: 30 + zip_n + zip_m + comp_size]
         uncompressed_data = ""
 
         dec = zlib.decompressobj(-zlib.MAX_WBITS)
