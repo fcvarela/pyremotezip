@@ -1,7 +1,5 @@
 # PyRemoteZip
 
-### License: BSD
-
 PyRemoteZip is a pure python module to extract files from remote zip archives without downloading the whole zip archive.
 
 ### Usage
