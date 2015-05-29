@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/fcvarela/pyremotezip.png?label=ready&title=Ready)](https://waffle.io/fcvarela/pyremotezip)
 # PyRemoteZip
 
 PyRemoteZip is a pure python module to extract files from remote zip archives without downloading the whole zip archive.
