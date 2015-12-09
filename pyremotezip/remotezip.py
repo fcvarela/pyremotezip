@@ -166,6 +166,11 @@ class RemoteZip(object):
 
         raw_zip_data = filedata[30 + zip_n + zip_m: 30 + zip_n + zip_m + comp_size]
         uncompressed_data = ""
+        
+        # can't decompress if stored without compression
+        compression_method = unpack("H", filedata[8:10])[0]
+        if compression_method == 0:
+          return raw_zip_data
 
         dec = zlib.decompressobj(-zlib.MAX_WBITS)
         for chunk in raw_zip_data:
